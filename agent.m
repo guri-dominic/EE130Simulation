@@ -15,7 +15,7 @@ classdef agent < handle
     
     properties
         % System Definition (ODE, time, initial conditions)
-        ode = @(t,y) [y(2); 1*(1-y(1)^2)*y(2)-1*y(1)];
+        ode = @(t,y) [y(2); 1*(1-y(1)^2)*y(2)-1*y(1)];  % Van der Pol Oscill.
         t = (0:0.01:1);     % time (default)
         init = [1.0 2.0];
         order;
@@ -100,14 +100,16 @@ classdef agent < handle
             obj.v = v;
         end
         
-        function [ms] = step(obj)
+        function [state, meas] = step(obj)
             obj.counter = obj.counter + 1;
+            index = obj.counter;
             % process with noise
             p_noise = obj.w .* randn(obj.order, 1);
             
-            obj.xn(:,obj.counter) = obj.x(:,obj.counter) + p_noise;
-            ms = obj.xn(:,obj.counter);
-            % tm = obj.t(obj.counter);
+            obj.xn(:, index) = obj.x(:, index) + p_noise;
+            state = obj.xn(:, index);
+            % tm = obj.t(index);
+            meas = obj.measure(index);
         end
         
         function run(obj)
@@ -122,6 +124,13 @@ classdef agent < handle
             obj.z = zeros(size(obj.x));
             obj.zn = zeros(size(obj.x));
             obj.counter = 1;
+        end
+        
+        function meas = measure(obj, index)
+            obj.z(:, index) = obj.x(:, index);
+            size(obj.z)
+            obj.zn(:, index) = obj.z(:, index) + obj.v .* randn(obj.order, 1);
+            meas = obj.zn(:, index);
         end
         
         function [time,x] = initialize(obj)
@@ -142,11 +151,16 @@ classdef agent < handle
             plot(obj.t, obj.x(1,:),obj.t, obj.x(2,:));
             hold on
             plot(obj.t, obj.xn(1,:),obj.t, obj.xn(2,:));
+            plot(obj.t, obj.zn(1,:),obj.t, obj.zn(2,:));
             hold off
+            legend('States','States + Noise(w)','Measurement + Noise(v)')
+            
             figure
             plot(obj.x(1,:), obj.x(2,:))
             hold on
+            plot(obj.zn(1,:), obj.zn(2,:))
             plot(obj.xn(1,:), obj.xn(2,:))
+            legend('Position','Position + Noise(w)','Measurement + Noise(v)')
             hold off
         end
     end

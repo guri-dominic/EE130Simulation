@@ -24,17 +24,18 @@ p4 = agent(dy_dt, init, t);
 p1.initialize
 
 %% Step
-% takes one time step and returns (for now) the noise process output, just for
-% that one step
+% takes one time step and returns the states (+noise) and measurement(+noise)
+% process output, just for that one step  
 p1.step
 
 %% Run
 % takes all the steps and the output is stored in a variable
-p4.initialize;
-p4.run;
+p3.initialize;
+
+p3.run;
 
 %% Plot
-p4.plotall
+p3.plotall
 
 
 
