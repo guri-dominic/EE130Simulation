@@ -28,10 +28,12 @@ classdef agent < handle
         % States & Measurements
         x;          % states (clean)
         xn;         % states (with noise - w)
-        z;          % measurements
-        zn;         % measurements (with noise - v)
         % simulation step
         counter = 1;
+        % measurement model
+        h = @(x) x;
+        z;          % measurements
+        zn;         % measurements (with noise - v)
     end
     
     methods
@@ -39,11 +41,13 @@ classdef agent < handle
         function obj = agent(varargin)
             if (nargin > 0)
                 % use default values
+% --------------------------- 1 Variables (ode) ----------------------------
                 if (nargin == 1)
                     % ode variable
                     assert(isa(varargin{1},'function_handle'));
                     obj.ode = varargin{1};
                     obj.order = length(obj.init);
+% ------------------------ 2 Variables (ode, init) -------------------------
                 elseif (nargin == 2)
                     % ode variable
                     assert(isa(varargin{1},'function_handle'));
@@ -53,6 +57,7 @@ classdef agent < handle
                     assert(isvector(init_conditions));
                     obj.init = init_conditions;
                     obj.order = length(obj.init);
+% ---------------------- 3 Variables (ode, init, time) ----------------------
                 elseif (nargin == 3)
                     % ode variable
                     assert(isa(varargin{1},'function_handle'));
@@ -73,27 +78,70 @@ classdef agent < handle
                     else
                         error('Time variable incorrectly set for agent')
                     end
+% ------------------- 4 Variables (ode, init, time, noise) ------------------
+                elseif (nargin == 4)
+                    % 1. ode variable
+                    assert(isa(varargin{1},'function_handle'));
+                    obj.ode = varargin{1};
+                    % 2. check initial conditions [change order]
+                    init_conditions = varargin{2};
+                    assert(isvector(init_conditions));
+                    obj.init = init_conditions;
+                    obj.order = length(init_conditions);
+                    % 3. time variable
+                    tm = varargin{3};
+                    if((length(tm) > 2) && (all(diff(tm)) >= 0))
+                        obj.t = tm;
+                        disp('Vector')
+                    elseif((length(tm) == 2) && (tm(1) < tm(2)))
+                        obj.t = linspace(tm(1),tm(2), 100);
+                        disp('Start End')
+                    else
+                        error('Time variable incorrectly set for agent')
+                    end
+                    % 4. noise
+                    noise = varargin{4};
+                    assert(isvector(noise) && (length(noise) == 2));
+                    obj.w = noise(1);
+                    obj.v = noise(2);
+% --------- 5 Variables (ode, init, time, noise, measurement_model) ---------
+                elseif (nargin == 4)
+                    % 1. ode variable
+                    assert(isa(varargin{1},'function_handle'));
+                    obj.ode = varargin{1};
+                    % 2. check initial conditions [change order]
+                    init_conditions = varargin{2};
+                    assert(isvector(init_conditions));
+                    obj.init = init_conditions;
+                    obj.order = length(init_conditions);
+                    % 3. time variable
+                    tm = varargin{3};
+                    if((length(tm) > 2) && (all(diff(tm)) >= 0))
+                        obj.t = tm;
+                        disp('Vector')
+                    elseif((length(tm) == 2) && (tm(1) < tm(2)))
+                        obj.t = linspace(tm(1),tm(2), 100);
+                        disp('Start End')
+                    else
+                        error('Time variable incorrectly set for agent')
+                    end
+                    % 4. noise
+                    noise = varargin{4};
+                    assert(isvector(noise) && (length(noise) == 2));
+                    obj.w = noise(1);
+                    obj.v = noise(2);
+                    % 5. measurement model
+                    meas_model = varargin{5};
+                    assert(isa(meas_model,'function_handle'));
+                    obj.h = meas_model;
                 end
             end
         end
-        
-%         function obj = agent(odefun, init_conditions)
-%             assert(isa(odefun,'function_handle'));
-%             assert(isvector(init_conditions));
-%             obj.order = length(init_conditions);
-%             obj.ode = odefun;
-%         end
         
         function set.w(obj, w)
             assert(w > 0.0 && isnumeric(w));
             obj.w = w;
         end
-        
-        
-%         function order = get.order(obj)
-%             obj.order = length(obj.init);
-%             order = length(obj.init);
-%         end
         
         function set.v(obj, v)
             assert(v > 0.0 && isnumeric(v));
@@ -111,11 +159,18 @@ classdef agent < handle
             % tm = obj.t(index);
             meas = obj.measure(index);
         end
-        
+% ------------ Measurement Model Function ---------------
+        function meas = measure(obj, index)
+            obj.z(:, index) = obj.h(obj.x(:, index));
+            obj.zn(:, index) = obj.z(:, index) + obj.v .* randn(obj.order, 1);
+            meas = obj.zn(:, index);
+            % size(obj.z)
+        end
+% ------------ Take All Step()  ---------------
         function run(obj)
             obj.reset;
             for i=1:length(diff(obj.t))
-                obj.step
+                obj.step;
             end
         end
         
@@ -124,13 +179,6 @@ classdef agent < handle
             obj.z = zeros(size(obj.x));
             obj.zn = zeros(size(obj.x));
             obj.counter = 1;
-        end
-        
-        function meas = measure(obj, index)
-            obj.z(:, index) = obj.x(:, index);
-            size(obj.z)
-            obj.zn(:, index) = obj.z(:, index) + obj.v .* randn(obj.order, 1);
-            meas = obj.zn(:, index);
         end
         
         function [time,x] = initialize(obj)

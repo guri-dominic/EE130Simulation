@@ -1,5 +1,6 @@
 clear 
 close all
+clc
 %% 4 Ways to initialize
 % particle with default parameters
 p1 = agent;
@@ -21,12 +22,12 @@ p4 = agent(dy_dt, init, t);
 
 %% Initialize (Required)
 % the gerate the complete path with no noise
-p1.initialize
+p1.initialize;
 
 %% Step
 % takes one time step and returns the states (+noise) and measurement(+noise)
 % process output, just for that one step  
-p1.step
+p1.step;
 
 %% Run
 % takes all the steps and the output is stored in a variable
@@ -37,6 +38,12 @@ p3.run;
 %% Plot
 p3.plotall
 
+%% agent Arrays
+l = agent.empty;
+for k = 1:5
+   l(k) = agent;
+   initialize(l(k));
+end
 
 
 
