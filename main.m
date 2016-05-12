@@ -53,21 +53,10 @@ for i = 1:N
     plot(a(i).x(1,:), a(i).x(2,:), 'LineWidth', 1)
 end
 legend('1','2','3','4','5','6','7','8','9','10')
-% labels = num2str((1:size(C',1))','%d');
-% scatter(C(1,:),C(2,:), '*','LineWidth',5);
-% text(C(:,1), C(:,2), labels, 'horizontal','left', 'vertical','bottom','FontSize',14,'Color','red')
-% plot(C(1,:),C(2,:), 'LineWidth', 1, 'LineStyle', '-    ')
+
 hold off
 grid on
 
-%% Simple Agent
-% mu = 1; k = 1;
-% dy_dt = @(t,y) [y(2); mu*(1-y(1)^2)*y(2)-k*y(1)];
-% b = agent(dy_dt);
-% b.t = [0 30];
-% initialize(b); run(b);
-% 
-% plot(b.x(1,:), b.x(2,:), 'LineWidth', 3)
 
 
 

@@ -1,27 +1,36 @@
 
-
+%% Simple Agent
+% mu = 1; k = 1;
+% dy_dt = @(t,y) [y(2); mu*(1-y(1)^2)*y(2)-k*y(1)];
+% b = agent(dy_dt);
+% b.t = [0 30];
+% initialize(b); run(b);
+% 
+% plot(b.x(1,:), b.x(2,:), 'LineWidth', 3)
+clear; clc;
 
 
 a = agent;
 a.t = [0 30];
 
 w = a.w; Q = w^2*eye(2); 
-
 v = a.v; R = v^2*eye(2); 
 
 f = @(x) [x(2); x(2)*(1 - x(1)^2) - z(1)];
-h = @(x) x;
+h = @(x) [x(1)^1.2; 0];
 
 % Jacobians
+% Jfx = @(x) [0 1; (2*x(1)*x(2)-1) (1 - x(1)^2)];
 Jfx = @(x) [0 1; (2*x(1)*x(2)-1) (1 - x(1)^2)];
 % Jfw = @(x)
 % W = Jfw;
 
-Jhx = @(x) [1 0; 0 1];
+Jhx = @(x) [1.2*x(1)^0.2 0; 0 0];
 % Jhx = [1 0; 0 1];
 % Jhv = 
 % V = Jhv;
-
+a.h = h;
+% a.ode = f;
 
 initialize(a);
 order = a.order;
@@ -58,46 +67,53 @@ end
 
 %% Error Accumulation
 % TR = Ptr2; ETR = E;
-TR = TR + Ptr2;
-ETR = ETR + E;
-
-%% Plots
-figure(1) 
-plot(a.t, a.xn(1,:),a.t, a.xn(2,:));
-hold on
-plot(a.t, X(1,:),a.t, X(2,:), 'LineWidth', 3);
-plot(a.t, a.zn(1,:),a.t, a.zn(2,:));
-plot(a.t, a.x(1,:),a.t, a.x(2,:));
-hold off
-grid on
-legend('State 1 + Noise','State 2 + Noise', ...
-    'Estimation 1','Estimation 2', ...
-    'Measurement (State 1)','Measurement (State 2)', ...
-    'Correct State 1', 'Correct State 2')
-
-
-figure(2) 
-plot(Ptr1)
-hold on
-plot(Ptr2)
-plot(TR./200)
-plot(ETR(1,:)./200)
-plot(ETR(2,:)./200)
-legend('P(previous) Trace','P(focast) Trace','Avg P(focast) Trace', 'Error-1', 'Error-2')
-hold off
-
+% TR = TR + Ptr2;
+% ETR = ETR + E;
 figure(3) 
-plot(X(1,:), X(2,:), 'LineWidth', 3)
+plot(X(1,:), X(2,:), 'LineWidth', 1.5)
 hold on
-plot(a.x(1,:), a.x(2,:), 'LineWidth', 3)
-plot(a.zn(1,:), a.zn(2,:))
+% plot(a.x(1,:), a.x(2,:), 'LineWidth', 3)
+% plot(a.zn(1,:), a.zn(2,:))
 plot(a.xn(1,:), a.xn(2,:))
 hold off
-grid on
-legend('Estimation', ...
-    'Correct States', ...
-    'Measurements + Noise', ...
-    'States + Noise')
+legend('Estimation', 'State')
+
+%% Plots
+% figure(1) 
+% plot(a.t, a.xn(1,:),a.t, a.xn(2,:));
+% hold on
+% plot(a.t, X(1,:),a.t, X(2,:), 'LineWidth', 3);
+% plot(a.t, a.zn(1,:),a.t, a.zn(2,:));
+% plot(a.t, a.x(1,:),a.t, a.x(2,:));
+% hold off
+% grid on
+% legend('State 1 + Noise','State 2 + Noise', ...
+%     'Estimation 1','Estimation 2', ...
+%     'Measurement (State 1)','Measurement (State 2)', ...
+%     'Correct State 1', 'Correct State 2')
+% 
+% figure(2) 
+% plot(Ptr1)
+% hold on
+% plot(Ptr2)
+% plot(TR./200)
+% plot(ETR(1,:)./200)
+% plot(ETR(2,:)./200)
+% legend('P(previous) Trace','P(focast) Trace','Avg P(focast) Trace', 'Error-1', 'Error-2')
+% hold off
+% 
+% figure(3) 
+% plot(X(1,:), X(2,:), 'LineWidth', 3)
+% hold on
+% plot(a.x(1,:), a.x(2,:), 'LineWidth', 3)
+% plot(a.zn(1,:), a.zn(2,:))
+% plot(a.xn(1,:), a.xn(2,:))
+% hold off
+% grid on
+% legend('Estimation', ...
+%     'Correct States', ...
+%     'Measurements + Noise', ...
+%     'States + Noise')
 
 
 
