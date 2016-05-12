@@ -1,4 +1,4 @@
-% 
+% http://mathworld.wolfram.com/vanderPolEquation.html
 % N=10 sensors/agents located inside a box. 
 % M=4 anchor nodes at each corner of the box (location known).
 % We assume each sensor knows it’s initial position exactly as an algorithm such
@@ -19,21 +19,16 @@
 % [REPEAT]
 %
 %% Clear & Start Simulation
-clear; close all; clc
-
+% clear; close all; clc
 
 %% Particles & Anchors
 N = 10;             % number of particles
 M = 4;              % number of anchors
-time = (0:0.05:30);      % simulation time
+time = (0:0.1:30);      % simulation time
 
-% MU = [4 6 2 7 3 7 7 8 5 1];
 MU = [0.1238 0.7981 0.5518 0.2222 0.3423 0.1389 0.6826 0.7922 0.0250 0.5919];
 K = [1 4 3 3 2 1 1 4 3 1];
-
-% r = -5 + (5+5)*rand(10,1)
-% X_0 = [1 3 2 3 3 4 4 2 1 2];
-% Y_0 = [2 2 1 4 2 1 4 3 2 4];
+% Initial Conditions
 X_0 = [2.3646 -1.8651 -1.6148 3.1161 -3.7626 2.4792 -1.7582 -2.2639 2.5350 -1.7056];
 Y_0 = [1.4502 -2.7035 1.7500 1.3389 -3.8156 -4.1555 -3.0425 -0.6023 0.1007 -2.5684];
 
@@ -45,14 +40,14 @@ for n=1:N
            initial_cond, time);
     
     initialize(a(n)); run(a(n));
-    C(:,n) = a(n).x(:,300);
+    C(:,n) = a(n).x(:,round(length(time)/2));
 end
 
 
 %% Plot 
-figure(1)
-rectangle('Position',[-5 -5 10 10])
-axis([-6 6 -6 6])
+figure
+rectangle('Position',[-5 -5 10 10],'LineWidth',3)
+axis([-6 8 -6 6])
 hold on
 for i = 1:N
     plot(a(i).x(1,:), a(i).x(2,:), 'LineWidth', 1)
