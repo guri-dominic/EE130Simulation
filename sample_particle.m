@@ -63,3 +63,6 @@ subplot(1,3,[1 2]);
 plot(t,y(:,1),'r-',t,y(:,2),'g-'); xlabel('time'); legend('y(1)','y(2)');
 subplot(1,3,3);
 plot(y(:,1),y(:,2)); xlabel('y(1)'); ylabel('y(2)');
+
+
+

@@ -71,10 +71,10 @@ classdef agent < handle
                     tm = varargin{3};
                     if((length(tm) > 2) && (all(diff(tm)) >= 0))
                         obj.t = tm;
-                        disp('Vector')
+                        % disp('Vector')
                     elseif((length(tm) == 2) && (tm(1) < tm(2)))
                         obj.t = linspace(tm(1),tm(2), 100);
-                        disp('Start End')
+                        % disp('Start End')
                     else
                         error('Time variable incorrectly set for agent')
                     end
@@ -92,10 +92,10 @@ classdef agent < handle
                     tm = varargin{3};
                     if((length(tm) > 2) && (all(diff(tm)) >= 0))
                         obj.t = tm;
-                        disp('Vector')
+                        % disp('Vector')
                     elseif((length(tm) == 2) && (tm(1) < tm(2)))
                         obj.t = linspace(tm(1),tm(2), 100);
-                        disp('Start End')
+                        % disp('Start End')
                     else
                         error('Time variable incorrectly set for agent')
                     end
@@ -118,10 +118,10 @@ classdef agent < handle
                     tm = varargin{3};
                     if((length(tm) > 2) && (all(diff(tm)) >= 0))
                         obj.t = tm;
-                        disp('Vector')
+                        % disp('Vector')
                     elseif((length(tm) == 2) && (tm(1) < tm(2)))
                         obj.t = linspace(tm(1),tm(2), 100);
-                        disp('Start End')
+                        % disp('Start End')
                     else
                         error('Time variable incorrectly set for agent')
                     end
@@ -186,6 +186,7 @@ classdef agent < handle
             % Noiseless Evaluations
             % Process
             [time,x] = ode45(obj.ode, obj.t, obj.init, obj.odeopt);
+            % x = x + 5;
             obj.t = transpose(time);
             obj.x = transpose(x);
             % Measurement
