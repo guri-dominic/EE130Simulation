@@ -45,17 +45,8 @@ end
 
 
 %% Plot 
-figure
-rectangle('Position',[-5 -5 10 10],'LineWidth',3)
-axis([-6 8 -6 6])
-hold on
-for i = 1:N
-    plot(a(i).x(1,:), a(i).x(2,:), 'LineWidth', 1)
-end
-legend('1','2','3','4','5','6','7','8','9','10')
+simPlot(a, 100)
 
-hold off
-grid on
 
 
 

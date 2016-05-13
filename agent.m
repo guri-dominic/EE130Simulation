@@ -23,8 +23,8 @@ classdef agent < handle
         odeopt = odeset ('RelTol', 0.00001, 'AbsTol', ...
             0.00001,'InitialStep',0.5,'MaxStep',0.5);
         % Noise Parameters
-        w = 0.2;
-        v = 0.15;
+        w = 0.1;
+        v = 0.05;
         % States & Measurements
         x;          % states (clean)
         xn;         % states (with noise - w)
