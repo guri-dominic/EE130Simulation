@@ -21,7 +21,12 @@
 %% Clear & Start Simulation
 % clear; close all; clc
 
-%% Particles & Anchors
+%% Anchors
+anchorDist = 5;         
+anchorLoc = [-5 -5 5 5; ...
+            5 -5 -5 5];
+
+%% Particles
 N = 10;             % number of particles
 M = 4;              % number of anchors
 time = (0:0.1:30);      % simulation time
@@ -43,7 +48,17 @@ for n=1:N
     C(:,n) = a(n).x(:,round(length(time)/2));
 end
 
+%% Locations Function
+getAllLocs = @(index) [agentsLoc(a, index) anchorLoc];
+allAgents = M + N;
 
+
+%% Simulation
+for k = 1:length(time)
+% locs = getAllLocs(index) % get all current locations
+[neighbors, bCoords] = chooseConvHull(agentsIndex, [agentsLoc(a, index) anchorLoc]); % choose neighboring sensors
+
+end
 %% Plot 
 figure 
 hold on
