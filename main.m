@@ -54,17 +54,38 @@ allAgents = M + N;
 
 
 %% Simulation
-for k = 1:length(time)
-% locs = getAllLocs(index) % get all current locations
-[neighbors, bCoords] = chooseConvHull(agentsIndex, [agentsLoc(a, index) anchorLoc]); % choose neighboring sensors
 
+BP = zeros(N, allAgents);
+for k = 1:N
+    % locs = getAllLocs(index) % get all current locations
+    [neighbors, bCoords] = chooseConvHull(agentsIndex, [agentsLoc(a, index) anchorLoc]); % choose neighboring sensors
+    BP(k, neighbors(1)) = bCoords(1);
+    BP(k, neighbors(2)) = bCoords(2);
+    BP(k, neighbors(3)) = bCoords(3);
 end
+
+P = BP(:,(1:N));
+B = BP(:,(N+1:end));
+
+disp('DILOC')
+X = 2*rand(N,2);
+xlog = X;
+counter = 0;
+U = transpose(anchorLoc);
+while max(max(abs(X - transpose(agentsLoc(a, index))))) > 1e-3
+    X = P*X+B*U
+    transpose(agentsLoc(a, index))
+    abs(X - transpose(agentsLoc(a, index)))
+    counter = counter + 1;
+    % xlog(:,:,counter+1) = X;
+end
+
 %% Plot 
-figure 
-hold on
-simPlot(a)
-agentsPlot(a, 1)
-hold off
+% figure 
+% hold on
+% simPlot(a)
+% agentsPlot(a, 1)
+% hold off
 
 
 
