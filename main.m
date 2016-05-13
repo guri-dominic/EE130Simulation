@@ -54,6 +54,8 @@ allAgents = M + N;
 
 
 %% Simulation
+
+% measure sensor location
 % agentslocs = agentsLoc(a, index);
 measuredLocs = bCdistMeasure(N, agentslocs, anchorLoc);
 % dL = max(max(abs((agentslocs - measuredLocs)./agentslocs)))*100
