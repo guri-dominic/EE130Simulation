@@ -45,7 +45,11 @@ end
 
 
 %% Plot 
-simPlot(a, 100)
+figure 
+hold on
+simPlot(a)
+agentsPlot(a, 1)
+hold off
 
 
 

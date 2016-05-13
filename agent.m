@@ -179,10 +179,13 @@ classdef agent < handle
             obj.z = zeros(size(obj.x));
             obj.zn = zeros(size(obj.x));
             obj.counter = 1;
+            obj.xn(1,1) = obj.init(1);
+            obj.xn(2,1) = obj.init(2);
         end
         
         function [time,x] = initialize(obj)
             obj.order = length(obj.init);
+            obj.reset;
             % Noiseless Evaluations
             % Process
             [time,x] = ode45(obj.ode, obj.t, obj.init, obj.odeopt);
